@@ -244,3 +244,19 @@ pub fn delete_password(name: String) -> Result<(), Box<dyn Error>> {
     }
     Ok(())
 }
+
+// WALKPWD GENERATE
+
+pub fn generate_password(length: Option<usize>, use_symbols: bool, reveal: bool) -> Result<(), Box<dyn Error>> {
+    let generated_password = generate_random_password(length, use_symbols);
+
+    if let Ok(ref password) = generated_password {
+        if reveal{
+            println!("The generated password is: {}", password);
+        }
+        println!("Password copied to your clipboard.");
+        let _ = copy_to_clipboard(password);
+    }
+
+    Ok(())
+}

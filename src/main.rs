@@ -21,7 +21,7 @@ enum Commands {
         password: Option<String>,
         #[clap(short='l', long, help = "Set the length of the generated password (default is 12 characters)")]
         length: Option<usize>,
-        #[clap(short, long, help = "Use symbols in the generated password (default is false)")]
+        #[clap(short='u', long, help = "Use symbols in the generated password (default is false)")]
         use_symbols: bool,
     },
     #[clap(name = "get", about = "Retrieve a password from the vault")]
@@ -38,13 +38,22 @@ enum Commands {
         #[clap(short='n', long, help = "Name of the password entry to delete")]
         name: String,
     },
+    #[clap(name = "generate", about = "Only generate a password without creating any entry")]
+    Generate {
+        #[clap(short='l', long, help = "Set the length of the generated password (default is 12 characters)")]
+        length: Option<usize>,
+        #[clap(short='u', long, help = "Use symbols in the generated password (default is false)")]
+        use_symbols: bool,
+        #[clap(short='r', long, help = "Reveal the generated password")]
+        reveal: bool,
+    }
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
     let cli = WalkPwd::parse();
 
     match &cli.command {
-        Commands::Add { .. } | Commands::Get { .. } | Commands::List | Commands::Delete {..} => {
+        Commands::Add { .. } | Commands::Get { .. } | Commands::List | Commands::Delete {..} | Commands::Generate {..} => {
             if !vault::is_vault_initialized()? {
                 return Err("Vault is not initialized. Please run 'walkpwd init' first.".into());
             }
@@ -86,6 +95,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
         Commands::Delete { name } => {
             let _ = vault::delete_password(name);
+        }
+        Commands::Generate { length, use_symbols, reveal } => {
+            let _ = vault::generate_password(length, use_symbols, reveal);
         }
     }
 

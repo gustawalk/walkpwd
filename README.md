@@ -78,4 +78,16 @@ cargo install --path .
     (Required) Set the entry name to delete
         --name,-n
 ```
+### Generate
+`walkpwd generate` - Generate a password without adding any entry in your vault
+
+##### Generate params:
+```
+    (Optional) Set a length for the password
+        --length,-l
+    (Optional) Use symbols to generate the password
+        --use-symbols,-u
+    (Optional) Reveal the password after generating
+        --reveal,-r
+```
 
